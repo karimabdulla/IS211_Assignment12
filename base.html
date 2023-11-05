@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>{% block title %}{% endblock %} :: Student Quiz Manager</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon" />
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='apple-touch-icon.png') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='favicon-32x32.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='favicon-16x16.png') }}">
+    <link rel="manifest" href="{{ url_for('static', filename='site.webmanifest') }}">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css?family=Lato&display=swap" rel="stylesheet">
+    <script src="https://use.fontawesome.com/2f57198f21.js"></script>
+    <style>
+        body {
+            font-family: 'Lato', sans-serif;
+        }
+    </style>
+    {% block head_extra %}{% endblock %}
+</head>
+<body class="bg-dark">
+    <nav class="navbar navbar-dark" style="background: #000;">
+        <a class="navbar-brand" href="/"><i class="fa fa-fw fa-graduation-cap"></i>&nbsp;Student Quiz Manager</a>
+        <div class="float-right">
+            <div class="float-left mr-2">
+                {% block navbar_extra %}{% endblock %}
+            </div>
+            {% if "auth" in session %}
+            <a class="float-right btn btn-sm btn-warning" href="/logout"><i class="fa fa-fw fa-sign-out"></i>Logout {{ session["auth"]["first_name"]  }} {{ session["auth"]["last_name"] }}</a>
+            {% endif %}
+        </div>
+    </nav>
+    <div class="container">
+        {% if breadcrumbs and breadcrumbs|length > 0 %}
+        <nav aria-label="breadcrumb" class="my-3">
+            <ol class="breadcrumb text-light" style="background: #000;">
+                {% for crumb in breadcrumbs %}
+                {% if loop.last %}
+                <li class="breadcrumb-item active" aria-current="page">{{ crumb.title }}</li>
+                {% else %}
+                <li class="breadcrumb-item"><a href="{{ crumb.url }}">{{ crumb.title }}</a></li>
+                {% endif %}
+                {% endfor %}
+            </ol>
+        </nav>
+        {% endif %}
+        {% if alert %}
+        <div class="alert alert-{{ alert.level }} alert-dismissable fade show sticky-top" style="z-index: 10000;" role="alert">
+            {{ alert.message }}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        {% endif %}
+        {% block page_content %}{% endblock %}
+    </div>
+    <!-- Load jQuery, Popper, Bootstrap -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/5.3.2/bootbox.min.js" crossorigin="anonymous"></script>
+    <script>
+        $(document).ready(function(){
+            if ($(".alert.alert-dismissable").length > 0){
+                setTimeout(function(){
+                    $(".alert.alert-dismissable").alert("close");
+                }, 10000);
+            }
+
+            function confirm(el, callback)
+            {
+                bootbox.confirm({
+                    message: el.data("message"),
+                    buttons: {
+                        confirm: {
+                            label: 'Yes',
+                            className: 'btn-danger'
+                        },
+                        cancel: {
+                            label: 'Cancel',
+                            className: 'btn-secondary'
+                        }
+                    },
+                    callback: function(result){
+                        callback(result);
+                    }
+                });
+            }
+
+            $(".delete-btn").on("click", function(e){
+                e.preventDefault();
+                var el = $(this)
+                callback = function(result){
+                    if (result)
+                        el.parent().submit();
+                }
+                confirm(el, callback);
+            });
+        });
+    </script>
+    {% block script_extra %}{% endblock %}
+</body>
+</html>>

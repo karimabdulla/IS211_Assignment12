@@ -1,0 +1,68 @@
+{% extends "layout/base.html" %}
+{% block title %}{{ quiz.quiz_subject }} Results{% endblock %}
+{% block navbar_extra %}
+{% if authed %}
+<a class="float-right btn btn-sm btn-info" href="/results/add"><i class="fa fa-fw fa-plus-circle"></i>Add Quiz Result</a>
+{% endif %}
+{% endblock %}
+{% block page_content %}
+<div> class="row{{ " mt-3" if not authed }}">
+    <div class="col-12">
+        <div class="card text-white" style="background: #000;">
+            <div class="card-header">
+                <div class="d-flex w-100">
+                    <span class="mb-1 h4">
+                        <i class="fa fa-fw fa-file-text-o"></i>&nbsp;{{ quiz.quiz_subject }} Results
+                    </span>
+                    {% if authed %}
+                    <form action="/quiz/{{ quiz.id }}/delete" method="POST" class="form-inline ml-auto">
+                        <button type="submit" data-message="Are you sure you want to delete this quiz?" class="btn btn-sm btn-danger delete-btn"><i class="fa fa-fw fa-trash"></i>Delete Quiz</button>
+                    </form>
+                    {% endif %}
+                </div>
+                <h5>{{ quiz.quiz_date }} <em>({{ quiz.question_count }} Questions)</em></h5>
+            </div>
+            <div class="card-body p-0 bg-dark">
+                {% if results %}
+                <table class="table table-striped table-hover table-dark m-0 p-0">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th scope="col">ID #</th>
+                            {% if authed %}
+                            <th scope="col">First Name</th>
+                            <th scope="col">Last Name</th>
+                            {% endif %}
+                            <th scope="col" class="text-right">Score</th>
+                            {% if authed %}
+                            <th scope="col" class="text-right"></th>
+                            {% endif %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for result in results %}
+                        <tr>
+                            <th scope="row">{{ result.id }}</th>
+                            {% if authed %}
+                            <th>{{ result.first_name }}</th>
+                            <th>{{ result.last_name }}</th>
+                            {% endif %}
+                            <td class="text-right">{{ result.score }}</td>
+                            {% if authed %}
+                            <td class="text-right">
+                                <form action="/quiz/{{ quiz.id }}/results/{{ result.id }}/delete" method="POST" class="float-right">
+                                    <button type="submit" class="btn btn-sm btn-danger delete-btn" data-message="Are you sure you want to delete this quiz result?"><i class="fa fa-fw fa-trash"></i></button>
+                                </form>
+                            </td>
+                            {% endif %}
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <h5 class="text-center my-2">No quiz results found.</h5>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,52 @@
+{% extends "layout/base.html" %}
+{% block title %}Add Quiz Result{% endblock %}
+{% block page_content %}
+<div class="row">
+    <div class="col-lg-6 col-md-8 col-sm-10 col-xs-12 mt-2 mb-2 mx-auto">
+        {% if alert %}
+        <div class="alert alert-{{ alert.level }} alert-dismissable fade show sticky-top mt-3" style="z-index: 10000;" role="alert">
+            {{ alert.message }}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        {% endif %}
+        <div class="card text-white" style="background-color: #000;">
+            <div class="card-header sticky-top" style="background-color: #000;">
+                <h4 class="mb-1"><i class="fa fa-fw fa-check-circle-o"></i>&nbsp;Add Quiz Result</h4>
+            </div>
+            <div class="card-body bg-light">
+                <form action="/results/add" method="POST">
+                    <div class="form-group">
+                        <select> class="form-control{{ " is-invalid" if errors and errors.messages.student_id }}" name="student_id" required value="{{ errors.input.student_id if errors }}" />
+                            <option>{{ " selected" if not errors }} value="">Student (Select one)</option>
+                            {% if students %}
+                            {% for student in students %}
+                            <option>{{ " selected" if errors and errors.input.student_id == student.id|string }} value="{{ student.id }}">{{ student.last_name }}, {{ student.first_name }} - {{ student.id }}</option>
+                            {% endfor %}
+                            {% endif %}
+                        </select>
+                        {{ ("<small class=\"text-danger\">"+errors.messages.student_id+"</small>")|safe if errors and errors.messages.student_id }}
+                    </div>
+                    <div class="form-group">
+                        <select> class="form-control{{ " is-invalid" if errors and errors.messages.quiz_id }}" name="quiz_id" required value="{{ errors.input.quiz_id if errors }}" />
+                            <option>{{ " selected" if not errors }} value="">Quiz (Select one)</option>
+                            {% if quizzes %}
+                            {% for quiz in quizzes %}
+                            <option>{{ " selected" if errors and errors.input.quiz_id == quiz.id|string }} value="{{ quiz.id }}">{{ quiz.quiz_subject }} - {{ quiz.quiz_date }}</option>
+                            {% endfor %}
+                            {% endif %}
+                        </select>
+                        {{ ("<small class=\"text-danger\">"+errors.messages.quiz_id+"</small>")|safe if errors and errors.messages.quiz_id }}
+                    </div>
+                    <div class="form-group">
+                        <input> type="number" class="form-control{{ " is-invalid" if errors and errors.messages.score }}" name="score" placeholder="Quiz Grade" required value="{{ errors.input.score if errors }}" />
+                        {{ ("<small class=\"text-danger\">"+errors.messages.score+"</small>")|safe if errors and errors.messages.score }}
+                    </div>
+                    <button class="btn btn-sm btn-success float-right" type="submit" name="submit"><i class="fa fa-fw fa-plus-circle"></i>Add Quiz Result</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

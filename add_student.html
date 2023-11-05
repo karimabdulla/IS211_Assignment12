@@ -1,0 +1,34 @@
+{% extends "layout/base.html" %}
+{% block title %}Add Student{% endblock %}
+{% block page_content %}
+<div class="row">
+    <div class="col-lg-6 col-md-8 col-sm-10 col-xs-12 mt-2 mb-2 mx-auto">
+        {% if alert %}
+        <div class="alert alert-{{ alert.level }} alert-dismissable fade show sticky-top mt-3" style="z-index: 10000;" role="alert">
+            {{ alert.message }}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        {% endif %}
+        <div class="card text-white" style="background-color: #000;">
+            <div class="card-header sticky-top" style="background-color: #000;">
+                <h4 class="mb-1"><i class="fa fa-fw fa-user-circle"></i>&nbsp;Add Student</h4>
+            </div>
+            <div class="card-body bg-light">
+                <form action="/student/add" method="POST">
+                    <div class="form-group">
+                        <input> type="text" class="form-control{{ " is-invalid" if errors and errors.messages.first_name }}" name="first_name" placeholder="First name" required value="{{ errors.input.first_name if errors }}" />
+                        {{ ("<small class=\"text-danger\">"+errors.messages.first_name+"</small>")|safe if errors and errors.messages.first_name }}
+                    </div>
+                    <div class="form-group">
+                        <input> type="text" class="form-control{{ " is-invalid" if errors and errors.messages.last_name }}" name="last_name" placeholder="Last name" required value="{{ errors.input.last_name if errors }}" />
+                        {{ ("<small class=\"text-danger\">"+errors.messages.last_name+"</small>")|safe if errors and errors.messages.last_name }}
+                    </div>
+                    <button class="btn btn-sm btn-success float-right" type="submit" name="submit"><i class="fa fa-fw fa-plus-circle"></i>Add Student</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
